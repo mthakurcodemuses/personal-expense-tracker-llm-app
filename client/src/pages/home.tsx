@@ -4,6 +4,8 @@ import { Upload } from "lucide-react";
 import ExpenseGrid from "@/components/expense-grid";
 import CategoryChart from "@/components/category-chart";
 import MerchantAnalysis from "@/components/merchant-analysis";
+import MonthlyTotal from "@/components/monthly-total"; // Added import
+
 
 export default function Home() {
   return (
@@ -19,6 +21,9 @@ export default function Home() {
 
         <div className="space-y-6">
           <Card className="p-6 bg-white shadow-sm">
+            <MonthlyTotal /> {/* Added MonthlyTotal component */}
+          </Card>
+          <Card className="p-6 bg-white shadow-sm">
             <h2 className="text-xl font-semibold mb-6 text-gray-800">Monthly Expenses</h2>
             <ExpenseGrid />
           </Card>
@@ -30,7 +35,7 @@ export default function Home() {
             </Card>
 
             <Card className="p-6 bg-white shadow-sm">
-              <h2 className="text-xl font-semibold mb-6 text-gray-800">Merchant Analysis</h2>
+              <h2 className="text-xl font-semibold mb-6 text-gray-800">Top Merchants</h2>
               <MerchantAnalysis />
             </Card>
           </div>

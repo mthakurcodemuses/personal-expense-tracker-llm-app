@@ -8,17 +8,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react";
 import { getExpensesByMonth } from "@/lib/mock-data";
 import { formatGBP } from "@/lib/utils";
+import MonthlyTotal from "./monthly-total";
 
 const months = ["January", "February", "March", "April"];
 
 export default function ExpenseGrid() {
   const [currentMonth, setCurrentMonth] = useState(1);
+  const [showTransactions, setShowTransactions] = useState(false);
 
   const expenses = getExpensesByMonth(currentMonth);
-  const monthTotal = expenses.reduce((sum, exp) => sum + exp.amount, 0);
 
   const nextMonth = () => {
     setCurrentMonth(curr => Math.min(curr + 1, 4));
@@ -29,7 +31,7 @@ export default function ExpenseGrid() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Button
@@ -50,35 +52,55 @@ export default function ExpenseGrid() {
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
-        <div className="text-lg font-semibold">
-          Total: {formatGBP(monthTotal)}
-        </div>
+        <Button
+          variant="outline"
+          onClick={() => setShowTransactions(!showTransactions)}
+          className="bg-white"
+        >
+          {showTransactions ? (
+            <>
+              <EyeOff className="h-4 w-4 mr-2" />
+              Hide Transactions
+            </>
+          ) : (
+            <>
+              <Eye className="h-4 w-4 mr-2" />
+              View Transactions
+            </>
+          )}
+        </Button>
       </div>
 
-      <div className="border rounded-lg">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Merchant</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {expenses.map((expense) => (
-              <TableRow key={expense.id}>
-                <TableCell>{new Date(expense.date).toLocaleDateString()}</TableCell>
-                <TableCell>{expense.merchant}</TableCell>
-                <TableCell>{expense.category}</TableCell>
-                <TableCell className="text-right">
-                  {formatGBP(expense.amount)}
-                </TableCell>
+      <MonthlyTotal month={currentMonth} />
+
+      {showTransactions && (
+        <Card className="border rounded-lg">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Merchant</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {expenses.map((expense) => (
+                <TableRow key={expense.id}>
+                  <TableCell>
+                    {new Date(expense.date).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>{expense.merchant}</TableCell>
+                  <TableCell>{expense.category}</TableCell>
+                  <TableCell className="text-right">
+                    {formatGBP(expense.amount)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
     </div>
   );
 }

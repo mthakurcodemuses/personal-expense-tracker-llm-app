@@ -13,9 +13,9 @@ export function formatGBP(amount: number): string {
 }
 
 export const categoryColors = {
-  Transportation: "hsl(258, 90%, 66%)",
-  Groceries: "hsl(328, 85%, 64%)",
-  "Dining Out": "hsl(200, 95%, 64%)",
-  Shopping: "hsl(158, 85%, 50%)",
-  Entertainment: "hsl(48, 95%, 53%)"
+  Transportation: "hsl(215, 85%, 45%)",
+  Groceries: "hsl(150, 75%, 40%)",
+  "Dining Out": "hsl(280, 75%, 45%)",
+  Shopping: "hsl(45, 85%, 50%)",
+  Entertainment: "hsl(330, 85%, 45%)"
 };

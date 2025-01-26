@@ -46,10 +46,12 @@ async def upload_statement(statement: UploadFile):
             file_path.unlink()
         raise HTTPException(status_code=500, detail=str(e))
 
-# Only mount static files if the directory exists
-static_dir = Path("client/src")
-if static_dir.exists():
-    app.mount("/", StaticFiles(directory="client/src", html=True), name="static")
+# Serve static files from dist/public directory
+static_files_dir = Path("dist/public")
+if static_files_dir.exists():
+    app.mount("/", StaticFiles(directory=str(static_files_dir), html=True), name="static")
+else:
+    print(f"Warning: Static files directory {static_files_dir} not found")
 
 if __name__ == "__main__":
     import uvicorn

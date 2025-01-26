@@ -4,16 +4,11 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: async ({ queryKey }) => {
-        const res = await fetch(queryKey[0] as string, {
-          credentials: "include",
-        });
+        const res = await fetch(queryKey[0] as string);
 
         if (!res.ok) {
-          if (res.status >= 500) {
-            throw new Error(`${res.status}: ${res.statusText}`);
-          }
-
-          throw new Error(`${res.status}: ${await res.text()}`);
+          const error = await res.text();
+          throw new Error(`${res.status}: ${error}`);
         }
 
         return res.json();

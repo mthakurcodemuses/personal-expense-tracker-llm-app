@@ -27,28 +27,27 @@ uploads_dir.mkdir(exist_ok=True)
 async def upload_statement(statement: UploadFile):
     if not statement.filename.endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
-    
+
     # Save the uploaded file
     file_path = uploads_dir / statement.filename
     try:
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(statement.file, buffer)
-        
+
         # Process the PDF
         expenses = parse_expenses(str(file_path))
-        
+
         # Clean up the file
         file_path.unlink()
-        
+
         return expenses
     except Exception as e:
         if file_path.exists():
             file_path.unlink()
         raise HTTPException(status_code=500, detail=str(e))
 
-# Serve static files in production
-if os.getenv("NODE_ENV") == "production":
-    app.mount("/", StaticFiles(directory="dist/public", html=True))
+# Mount static files
+app.mount("/", StaticFiles(directory="dist/public", html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { mockExpenses, getMerchantTotal, type Expense } from "@/lib/mock-data";
 import { formatGBP } from "@/lib/utils";
+import { useCategory } from "@/lib/category-context";
 
 interface MerchantCard {
   name: string;
@@ -9,15 +10,15 @@ interface MerchantCard {
   trend: "up" | "down" | "stable";
 }
 
-function getMerchantStats(expenses: Expense[]): MerchantCard[] {
-  const merchantTotals = getMerchantTotal(expenses);
+function getMerchantStats(expenses: Expense[], category: string | null): MerchantCard[] {
+  const filteredExpenses = category ? expenses.filter(e => e.category === category) : expenses;
+  const merchantTotals = getMerchantTotal(filteredExpenses);
 
   return Object.entries(merchantTotals)
     .map(([name, amount]) => {
-      const merchantTransactions = expenses.filter(e => e.merchant === name);
+      const merchantTransactions = filteredExpenses.filter(e => e.merchant === name);
       const transactionCount = merchantTransactions.length;
 
-      // Simple trend calculation based on first and last transaction
       const sortedTransactions = merchantTransactions.sort((a, b) => 
         new Date(a.date).getTime() - new Date(b.date).getTime()
       );
@@ -41,7 +42,16 @@ function getMerchantStats(expenses: Expense[]): MerchantCard[] {
 }
 
 export default function MerchantAnalysis() {
-  const merchants = getMerchantStats(mockExpenses);
+  const { selectedCategory } = useCategory();
+  const merchants = getMerchantStats(mockExpenses, selectedCategory);
+
+  if (merchants.length === 0) {
+    return (
+      <div className="text-center text-muted-foreground py-8">
+        No merchants found for the selected category
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-2 gap-4">

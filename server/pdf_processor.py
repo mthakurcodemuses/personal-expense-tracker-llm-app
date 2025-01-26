@@ -6,7 +6,7 @@ from PIL import Image
 from pypdf import PdfReader
 from langchain.prompts import PromptTemplate
 from langchain.output_parsers import PydanticOutputParser
-from langchain.llms import OpenAI
+from langchain_community.llms import OpenAI
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 import os

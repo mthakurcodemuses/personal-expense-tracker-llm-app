@@ -46,8 +46,10 @@ async def upload_statement(statement: UploadFile):
             file_path.unlink()
         raise HTTPException(status_code=500, detail=str(e))
 
-# Mount static files
-app.mount("/", StaticFiles(directory="dist/public", html=True), name="static")
+# Only mount static files if the directory exists
+static_dir = Path("client/src")
+if static_dir.exists():
+    app.mount("/", StaticFiles(directory="client/src", html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
